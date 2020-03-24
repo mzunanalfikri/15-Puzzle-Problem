@@ -237,7 +237,7 @@ def solvePuzzle(Puzz, Q, kandidat):
                     break
         sortQueue(Q)
         current = Q.popleft()
-        print(Puzzle.banyak_simpul)
+        # print(Puzzle.banyak_simpul)
     return current
 
 def masukanInput(Puz):
@@ -298,11 +298,13 @@ Puz = Puzzle()
 print("============ SELAMAT DATANG DI PROGRAM 15 Puzzle ! ================")
 print()
 masukanInput(Puz)
+
 print()
 if (not Puz.isInputValid()):
     print("Input tidak valid, masukkan Puzzle lagi !")
     masukanInput(Puz)
-
+print("Input Puzzle : ")
+cetakMatriks(Puz.mat)
 if (Puz.isSolvable()):
     print("Puzzle dapat diselesaikan !")
     now = time.time()
