@@ -1,7 +1,9 @@
+#import depedencies
 import copy
+import time
 from collections import deque
 
-#y, x = i, j
+#kelas puzzle
 class Puzzle:
     banyak_simpul = 0
     reference = [[1,2,3,4], [5,6,7,8], [9,10,11,12], [13,14,15,0]]
@@ -13,12 +15,13 @@ class Puzzle:
         self.basis = (0,0)
         self.path = ""
         self.costfunction = 0
-        self.w = None
-        self.a = None
-        self.s = None
+        self.u = None
+        self.l = None
         self.d = None
+        self.r = None
 
     def countCostFunction(self):
+    #fungsi untuk menghitung costfunction untuk tiap simpul
         count  = 0
         for i in range(4):
             for j in range(4):
@@ -26,49 +29,49 @@ class Puzzle:
                     count += 1
         return count;
 
-    def generateW(self):
+    def generateUp(self):
     #fungsi untuk generate sumpul jika puzzle yang kosong digeser ke atas
         if (self.basis[0] - 1 >= 0):
             Puzzle.banyak_simpul += 1
-            self.w = copy.deepcopy(self)
-            self.w.mat[self.basis[0]][self.basis[1]] = self.w.mat[self.basis[0] - 1][self.basis[1]]
-            self.w.mat[self.basis[0] - 1][self.basis[1]] = 0 
-            self.w.basis = (self.basis[0] - 1 , self.basis[1])
-            self.w.path  += "w"
-            self.w.costfunction = self.w.countCostFunction() + len(self.w.path)
+            self.u = copy.deepcopy(self)
+            self.u.mat[self.basis[0]][self.basis[1]] = self.u.mat[self.basis[0] - 1][self.basis[1]]
+            self.u.mat[self.basis[0] - 1][self.basis[1]] = 0 
+            self.u.basis = (self.basis[0] - 1 , self.basis[1])
+            self.u.path  += "u"
+            self.u.costfunction = self.u.countCostFunction() + len(self.u.path)
 
-    def generateA(self):
+    def generateLeft(self):
     #fungsi untuk generate simpul jika puzzle yang kosong digeser ke kiri
         if (self.basis[1] - 1 >= 0):
             Puzzle.banyak_simpul += 1
-            self.a = copy.deepcopy(self)
-            self.a.mat[self.basis[0]][self.basis[1]] = self.a.mat[self.basis[0]][self.basis[1] - 1]
-            self.a.mat[self.basis[0]][self.basis[1] - 1] = 0 
-            self.a.basis = (self.basis[0] , self.basis[1] - 1)
-            self.a.path  += "a"
-            self.a.costfunction = self.a.countCostFunction() + len(self.a.path)
+            self.l = copy.deepcopy(self)
+            self.l.mat[self.basis[0]][self.basis[1]] = self.l.mat[self.basis[0]][self.basis[1] - 1]
+            self.l.mat[self.basis[0]][self.basis[1] - 1] = 0 
+            self.l.basis = (self.basis[0] , self.basis[1] - 1)
+            self.l.path  += "l"
+            self.l.costfunction = self.l.countCostFunction() + len(self.l.path)
 
-    def generateS(self):
+    def generateDown(self):
     #fungsi untuk generate simpul jika puzzle yang kosong digeser ke bawah
         if (self.basis[0] + 1 <= 3):
             Puzzle.banyak_simpul += 1
-            self.s = copy.deepcopy(self)
-            self.s.mat[self.basis[0]][self.basis[1]] = self.s.mat[self.basis[0] + 1][self.basis[1]]
-            self.s.mat[self.basis[0] + 1][self.basis[1]] = 0 
-            self.s.basis = (self.basis[0] + 1 , self.basis[1])
-            self.s.path  += "s"
-            self.s.costfunction = self.s.countCostFunction() + len(self.s.path)
+            self.d = copy.deepcopy(self)
+            self.d.mat[self.basis[0]][self.basis[1]] = self.d.mat[self.basis[0] + 1][self.basis[1]]
+            self.d.mat[self.basis[0] + 1][self.basis[1]] = 0 
+            self.d.basis = (self.basis[0] + 1 , self.basis[1])
+            self.d.path  += "d"
+            self.d.costfunction = self.d.countCostFunction() + len(self.d.path)
 
-    def generateD(self):
+    def generateRight(self):
     #fungsi untuk generate simpul jika puzzle yang kosong digeser ke kanan
         if (self.basis[1] + 1 <= 3):
             Puzzle.banyak_simpul += 1
-            self.d = copy.deepcopy(self)
-            self.d.mat[self.basis[0]][self.basis[1]] = self.d.mat[self.basis[0]][self.basis[1] + 1]
-            self.d.mat[self.basis[0]][self.basis[1] + 1] = 0 
-            self.d.basis = (self.basis[0] , self.basis[1] + 1)
-            self.d.path  += "d"
-            self.d.costfunction = self.d.countCostFunction() + len(self.d.path)
+            self.r = copy.deepcopy(self)
+            self.r.mat[self.basis[0]][self.basis[1]] = self.r.mat[self.basis[0]][self.basis[1] + 1]
+            self.r.mat[self.basis[0]][self.basis[1] + 1] = 0 
+            self.r.basis = (self.basis[0] , self.basis[1] + 1)
+            self.r.path  += "r"
+            self.r.costfunction = self.r.countCostFunction() + len(self.r.path)
 
     def cetakPuzzle(self):
     #fungsi untuk mencetak puzzle
@@ -82,9 +85,16 @@ class Puzzle:
         print("Banyak simpul : ", Puzzle.banyak_simpul)
 
     def inputFromConsole(self):
+    #fungsi untuk menerima input dari console
         for i in range(4):
+            temp = str(input())
+            self.mat[i] = temp.split()
             for j in range(4):
-                self.mat[i][j] = int(input())
+                self.mat[i][j] = int(self.mat[i][j])
+                if (self.mat[i][j] == 0):
+                    self.basis = (i,j)
+                if (self.mat[i][j] != Puzzle.reference[i][j]):
+                    self.costfunction += 1
                 
     def readFile(self, filename):
     #fungsi untuk membaca dari file dan dimasukkan ke matriks
@@ -121,14 +131,30 @@ class Puzzle:
                     count += 1
         if ((self.basis[0] + self.basis[1]) % 2 == 1):
             count += 1
+        print("Kurangi(i) : ", count)
         if (count % 2 == 0):
-            print("Solvable")
+            # print("Solvable")
             return True
         else :
-            print("Not Solvable")
+            # print("Not Solvable")
             return False
 
+    def isInputValid(self):
+    #fungsi mengembalikan true jika puzzle yang dimasukkan valid
+        valid = [0 for i in range(16)]
+        for i in range(4):
+            for j in range(4):
+                if (self.mat[i][j] > 15 or self.mat[i][j] < 0):
+                    return False
+                else :
+                    valid[self.mat[i][j]] += 1
+        for i in valid:
+            if (i == 0):
+                return False
+        return True
+
 def isEqual(matA, matB):
+#mengembalikan true jika matriks A dan B sama
     for i in range(4):
         for j in range(4):
             if (matA[i][j] != matB[i][j]):
@@ -136,15 +162,18 @@ def isEqual(matA, matB):
     return True
 
 def isContain(kandidat, mat):
+#mengembalikan true jika dalam array kandidat terdapat matriks mat
     for i in kandidat:
         if (isEqual(i, mat)):
             return True
     return False
 
 def isFinish(mat, reference):
+#mengembalikan true jika mat mencapai target
     return isEqual(mat, reference)
 
 def sortQueue(Q):
+#fungsi untuk sort Queue Q agar memenuhi prio Que
     for i in range(len(Q)):
         for j in range(i+1, len(Q)):
             if (Q[i].costfunction > Q[j].costfunction):
@@ -156,45 +185,34 @@ def solvePuzzle(Puzz, Q, kandidat):
 #fungsi untukk mencari path
     current = Puzz
     kandidat.append(Puzz.mat)
-    while(True):
+    end = isFinish(current.mat, Puzzle.reference)
+    while(not(end)):
         #generate simpul W
-        current.generateW()
-        if (current.w != None):
-            if (isContain(kandidat, current.w.mat)):
+        current.generateUp()
+        if (current.u != None):
+            if (isContain(kandidat, current.u.mat)):
                 Puzzle.banyak_simpul -= 1
-                current.w = None
+                current.u = None
             else :
-                kandidat.append(current.w.mat)
-                Q.append(current.w)
-                if (isFinish(current.w.mat, Puzzle.reference)):
-                    current = current.w
+                kandidat.append(current.u.mat)
+                Q.append(current.u)
+                if (isFinish(current.u.mat, Puzzle.reference)):
+                    current = current.u
                     break
         #generate simpul A
-        current.generateA()
-        if (current.a != None):
-            if (isContain(kandidat, current.a.mat)):
+        current.generateLeft()
+        if (current.l != None):
+            if (isContain(kandidat, current.l.mat)):
                 Puzzle.banyak_simpul -= 1
-                current.a = None
+                current.l = None
             else :
-                kandidat.append(current.a.mat)
-                Q.append(current.a)
-                if (isFinish(current.a.mat, Puzzle.reference)):
-                    current = current.a
+                kandidat.append(current.l.mat)
+                Q.append(current.l)
+                if (isFinish(current.l.mat, Puzzle.reference)):
+                    current = current.l
                     break
         #generate S
-        current.generateS()
-        if (current.s != None):
-            if (isContain(kandidat, current.s.mat)):
-                Puzzle.banyak_simpul -= 1
-                current.s = None
-            else :
-                kandidat.append(current.s.mat)
-                Q.append(current.s)
-                if (isFinish(current.s.mat, Puzzle.reference)):
-                    current = current.s
-                    break
-        #generate D
-        current.generateD()
+        current.generateDown()
         if (current.d != None):
             if (isContain(kandidat, current.d.mat)):
                 Puzzle.banyak_simpul -= 1
@@ -205,28 +223,97 @@ def solvePuzzle(Puzz, Q, kandidat):
                 if (isFinish(current.d.mat, Puzzle.reference)):
                     current = current.d
                     break
-        # sortQueue(Q)
+        #generate D
+        current.generateRight()
+        if (current.r != None):
+            if (isContain(kandidat, current.r.mat)):
+                Puzzle.banyak_simpul -= 1
+                current.r = None
+            else :
+                kandidat.append(current.r.mat)
+                Q.append(current.r)
+                if (isFinish(current.r.mat, Puzzle.reference)):
+                    current = current.r
+                    break
+        sortQueue(Q)
         current = Q.popleft()
         print(Puzzle.banyak_simpul)
-
     return current
 
-#ALGORITMA
+def masukanInput(Puz):
+#prosedur untuk meminta pilihan input
+    print("Pilih opsi cara memasukkan puzzle : ")
+    print("1. Masukan dari file")
+    print("2. Masukan dari console")
+    x = int(input("Masukkan pilihan : "))
+    if (x == 1):
+        filename = str(input("Masukkan path file : "))
+        Puz.readFile(filename)
+    else :
+        print()
+        print("Masukkan 4 baris matriks, pisahkan dengan spasi, contoh : \n1 2 3 4\n5 6 7 8\n9 10 11 12\n13 14 15 0")
+        Puz.inputFromConsole()
 
+def cetakMatriks(mat):
+#prosedur untuk mencetak matriks
+    for i in range(4):
+        for j in range(4):
+            print(mat[i][j], end = " ")
+        print()
+
+def cetakPath(res, puz):
+#prosedur untuk mencetak path
+    mat = puz.mat
+    basis = puz.basis
+    path = res.path
+    for i in path:
+        if (i == "u"):
+            print("Langkah : up")
+            mat[basis[0]][basis[1]] = mat[basis[0] - 1][basis[1]]
+            mat[basis[0] - 1][basis[1]] = 0
+            basis = (basis[0] - 1, basis[1])
+        elif (i == "l"):
+            print("Langkah : left")
+            mat[basis[0]][basis[1]] = mat[basis[0]][basis[1] - 1]
+            mat[basis[0]][basis[1] - 1] = 0
+            basis = (basis[0], basis[1] - 1)
+        elif (i == "d"):
+            print("Langkah : down")
+            mat[basis[0]][basis[1]] = mat[basis[0] + 1][basis[1]]
+            mat[basis[0] + 1][basis[1]] = 0
+            basis = (basis[0] + 1, basis[1])
+        elif (i == "r"):
+            print("Langkah : right")
+            mat[basis[0]][basis[1]] = mat[basis[0]][basis[1] + 1]
+            mat[basis[0]][basis[1] + 1] = 0
+            basis = (basis[0], basis[1] + 1)
+        cetakMatriks(mat)
+
+#Kamus 
 kandidat = []
 Q = deque()
-
 Puz = Puzzle()
-# Puz.cetakPuzzle()
-Puz.readFile("config.txt")
-Puz.isSolvable()
-# Puz.cetakPuzzle()
-# print("Hasil : ", solvePuzzle(Puz, Q, kandidat).path)
-# print("banyak simpul : ", Puzzle.banyak_simpul)
-solvePuzzle(Puz, Q, kandidat).cetakPuzzle()
 
+#Algoritma
+print("============ SELAMAT DATANG DI PROGRAM 15 Puzzle ! ================")
+print()
+masukanInput(Puz)
+print()
+if (not Puz.isInputValid()):
+    print("Input tidak valid, masukkan Puzzle lagi !")
+    masukanInput(Puz)
 
-# print("="*14)
-# Puz.cetakPuzzle()
-# Puz.w.cetakPuzzle()
-
+if (Puz.isSolvable()):
+    print("Puzzle dapat diselesaikan !")
+    now = time.time()
+    Result = solvePuzzle(Puz, Q, kandidat)
+    print("Waktu yand dibutuhkan : ", time.time()-now)
+    print("Simpul yang di bangkitkan : ", Puzzle.banyak_simpul)
+    print("Banyak langkah : ", len(Result.path))
+    print("Path : ", Result.path)
+    print()
+    cetak = str(input("Cetak langkah ? (y/n)"))
+    if (cetak == "Y" or cetak == "y"):
+         cetakPath(Result, Puz)    
+else :
+    print("Puzzle tidak dapat diselesaikan")
