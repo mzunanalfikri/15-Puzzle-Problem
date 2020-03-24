@@ -1,7 +1,7 @@
 # 15-Puzzle-Problem
 ![1_Kg5sN-5U3Q7hevW9qhz2rA](https://user-images.githubusercontent.com/47711509/77442144-cf0b8600-6e1c-11ea-85fc-774f24b25e3c.gif)
 
-Solusi peersoalan 15-Puzzle menggunakan pendekatan algoritma Branch and Bound
+Solusi persoalan 15-Puzzle menggunakan pendekatan algoritma Branch and Bound
 
 ## Isi 
 * Folder scr berisi kode program
