@@ -4,7 +4,7 @@
 Solusi persoalan 15-Puzzle menggunakan pendekatan algoritma Branch and Bound
 
 ## Isi 
-* Folder scr berisi kode program
+* Folder src berisi kode program
 * Folder test berisi beberapa test case
 * Folder doc berisi dokumentasi
 
